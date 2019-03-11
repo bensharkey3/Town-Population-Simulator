@@ -7,12 +7,12 @@ import os
 print('Welcome to the game!')
 input('Press enter to continue:  ')
 print('')
-print('This is a population simulator for a fictional town.')
-print('The town starts with 20 people. With each year that passes, babies will be born and people will die.')
-print('Females can have a baby at any age between 18 and 40, but are most likely to give birth a in their late 20s.')
-print('People can die at any age, but more likely as they get older.')
-print('Names will be randomly assigned based on names in USA datasets.')
-print('Surnames are inherited from the mother.')
+print('- This is a population simulator for a fictional town.')
+print('- The town starts with 20 people. With each year that passes, babies will be born and people will die.')
+print('- Females can have a baby at any age between 18 and 40, but are most likely to give birth a in their late 20s.')
+print('- People can die at any age, but more likely as they get older.')
+print('- Names will be randomly assigned based on names in USA datasets.')
+print('- Surnames are inherited from the mother.')
 print('')
 print('loading...')
 
@@ -73,17 +73,30 @@ probdeath = pd.DataFrame(data)
 # rapid growth
 data = {'Age':list(range(18,40)), 'Prob':[0.02, 0.04, 0.06, 0.08, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.4, 0.35, 0.3, 0.25, 0.2, 0.15, 0.1, 0.08, 0.06, 0.04, 0.02]} 
 probbabyRG = pd.DataFrame(data)
+# neutral growth
+data = {'Age':list(range(18,40)), 'Prob':[0.01, 0.02, 0.03, 0.04, 0.05, 0.075, 0.1, 0.13, 0.155, 0.19, 0.215, 0.215, 0.19, 0.155, 0.13, 0.1, 0.075, 0.05, 0.04, 0.03, 0.02, 0.01]} 
+probbabyNU = pd.DataFrame(data)
+# moderate decline
+data = {'Age':list(range(18,40)), 'Prob':[0.007, 0.015, 0.02, 0.03, 0.04, 0.05, 0.07, 0.1, 0.12, 0.16, 0.21, 0.21, 0.16, 0.12, 0.1, 0.07, 0.05, 0.04, 0.03, 0.02, 0.015, 0.007]} 
+probbabyMD = pd.DataFrame(data)
 
 playing = 'y'
 
 while playing == 'y':
 
-
     # add years
     yearsadd = int(input('Run for how many more years? (enter between 1-20 years):  '))
-    
-    #yearsadd = 50
+    probbabyint = int(input('At what population growth rate? (1=rapid growth, 2=neutral, 3=moderate decline):  '))
 
+    if probbabyint == 1:
+        probbaby = probbabyRG
+    elif probbabyint == 2:
+        probbaby = probbabyNU
+    elif probbabyint == 3:
+        probbaby = probbabyMD
+    else:
+        print('incorrect input!')
+    
     endyear = year + yearsadd
 
     while year < endyear:
@@ -101,7 +114,7 @@ while playing == 'y':
         df.drop(columns={'YearDeceased1'}, inplace=True)
 
         # did anyone have a baby? if so enter new row for each
-        babies = df[(df['YearDeceased'].isnull()) & (df['Sex'] == 'F')].reset_index().merge(probbabyRG, on='Age').set_index('index')
+        babies = df[(df['YearDeceased'].isnull()) & (df['Sex'] == 'F')].reset_index().merge(probbaby, on='Age').set_index('index')
         lst = []
         for i in range(babies.shape[0]):
             lst.append(random.random())
@@ -215,6 +228,7 @@ while playing == 'y':
 # TO DO:
 # introduction and explanation text
 # add population vs time chart
+# try except to validate user input
 # figure out how to get charts to show
 # add in NoOfGrandchildren
 # add in written personal bio
