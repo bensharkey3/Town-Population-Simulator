@@ -5,6 +5,15 @@ import random
 import os
 
 print('Welcome to the game!')
+input('Press enter to continue:  ')
+print('')
+print('This is a population simulator for a fictional town.')
+print('The town starts with 20 people. With each year that passes, babies will be born and people will die.')
+print('Females can have a baby at any age between 18 and 40, but are most likely to give birth a in their late 20s.')
+print('People can die at any age, but more likely as they get older.')
+print('Names will be randomly assigned based on names in USA datasets.')
+print('Surnames are inherited from the mother.')
+print('')
 print('loading...')
 
 # read in surnames from data source
@@ -71,7 +80,7 @@ while playing == 'y':
 
 
     # add years
-    yearsadd = int(input('Run for how many more years? (enter between 1-10 years):  '))
+    yearsadd = int(input('Run for how many more years? (enter between 1-20 years):  '))
     
     #yearsadd = 50
 
@@ -153,35 +162,35 @@ while playing == 'y':
     print(title)
     print('--------------------------------------------------')
     print('')
-    print('current population: ')
+    print('Current population: ')
     print(len(df[df['YearDeceased'].isnull()]))
     print('')
-    print('all people that ever lived: ')
+    print('All people that ever lived: ')
     print(len(df))
     print('')
-    print('a randomly selected living person:')
+    print('A randomly selected living person:')
     alive = df[df['YearDeceased'].isnull()].index.tolist()
     print(df.iloc[random.choice(alive)])
     print('')
-    print('average age: ')
+    print('Average age: ')
     print(df[df['YearDeceased'].isnull()]['Age'].mean())
     print('')
-    print('average age at death: ')
+    print('Average age at death: ')
     print(df[df['YearDeceased'].notnull()]['Age'].mean())
     print('')
-    print('record for oldest person:')
+    print('Record for oldest person:')
     print(df['Age'].max())
     print('')
-    print('record for most children:')
+    print('Record for most children:')
     print(df[df['NoOfChildren'] == df['NoOfChildren'].max()])
     print('')
-    print('most popular surnames:')
+    print('Most popular surnames:')
     print(df.groupby('Surname').count()['FirstName'].sort_values(ascending=False))
     print('')
-    print('number of babies born in each year:')
+    print('Number of babies born in each year:')
     print(df.groupby('YearBorn')['FirstName'].count().plot())
     print('')
-    print('any duplicate names?')
+    print('Any duplicate names?')
     temp2 = df.groupby(['FirstName', 'MiddleName', 'Surname']).count().sort_values(by='Sex', ascending=False)[['Sex']].reset_index()
     if len(temp2[temp2['Sex'] > 1]) == 0:
         print('none, everyone has a unique name so far!')
@@ -206,7 +215,7 @@ while playing == 'y':
 # TO DO:
 # introduction and explanation text
 # add population vs time chart
-# figure how to get charts to show
+# figure out how to get charts to show
 # add in NoOfGrandchildren
 # add in written personal bio
 # age demographics histogram by bins
@@ -214,4 +223,6 @@ while playing == 'y':
 # option to add in an immigrant (female only), enter name and age
 # add a file that records aggregated data for each year, population etc
 # annual  productivity
+# limit list of duplicate names
+# clear output after each cycle
 # family tree
