@@ -85,7 +85,7 @@ playing = 'y'
 while playing == 'y':
 
     # add years
-    yearsadd = int(input('Run for how many more years? (enter between 1-20 years):  '))
+    yearsadd = int(input('Run for how many more years? (enter between 1-50 years):  '))
     probbabyint = int(input('At what population growth rate? (1=rapid growth, 2=neutral, 3=moderate decline):  '))
 
     if probbabyint == 1:
