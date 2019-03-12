@@ -227,17 +227,17 @@ while playing == 'y':
 
     
 # TO DO:
-# introduction and explanation text
 # add population vs time chart
 # try except to validate user input
 # figure out how to get charts to show
+# change write to csv to be after all the prints so less wait time
+# write to csv to only append added rows, df to be only the current population alive
 # add in NoOfGrandchildren
 # add in written personal bio
 # age demographics histogram by bins
-# select birthrate option (rapid growth, moderate growth, stable, rapid contraction, high contraction)
-# option to add in an immigrant (female only), enter name and age
-# add a file that records aggregated data for each year, population etc
-# annual  productivity
-# limit list of duplicate names
+# option to add in an immigrant, enter name and age
+# add a write to csv that records aggregated data for each year, population etc
+# annual productivity
+# limit list of duplicate names to be only the most
 # clear output after each cycle
 # family tree
