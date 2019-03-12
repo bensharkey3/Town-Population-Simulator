@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-import matplotlib as plt
+import matplotlib.pyplot as plt
 import random
 import os
 
@@ -201,7 +201,8 @@ while playing == 'y':
     print(df.groupby('Surname').count()['FirstName'].sort_values(ascending=False))
     print('')
     print('Number of babies born in each year:')
-    print(df.groupby('YearBorn')['FirstName'].count().plot())
+    df.groupby('YearBorn')['FirstName'].count().plot()
+    plt.show()
     print('')
     print('Any duplicate names?')
     temp2 = df.groupby(['FirstName', 'MiddleName', 'Surname']).count().sort_values(by='Sex', ascending=False)[['Sex']].reset_index()
