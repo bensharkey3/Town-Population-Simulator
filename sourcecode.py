@@ -80,6 +80,22 @@ probbabyNU = pd.DataFrame(data)
 data = {'Age':list(range(18,40)), 'Prob':[0.007, 0.015, 0.02, 0.03, 0.04, 0.05, 0.07, 0.1, 0.12, 0.16, 0.21, 0.21, 0.16, 0.12, 0.1, 0.07, 0.05, 0.04, 0.03, 0.02, 0.015, 0.007]} 
 probbabyMD = pd.DataFrame(data)
 
+# productivity output by age
+r1 = list(range(1,16))
+l1 = [0.0625]*15
+lr1 = [r1*l1 for r1,l1 in zip(r1,l1)]
+r2 = list(reversed(range(1,35)))
+l2 = [0.0286]*34
+lr2 = [r2*l2 for r2,l2 in zip(r2,l2)]
+prodout = [0]*14 + lr1 + [1]*11 + lr2 + [0]*46
+data = {'Age':list(range(1,121)), 'ProdOutput':prodout} 
+prodout = pd.DataFrame(data)
+
+# productivity used by age
+produse = [0.25]*120
+data = {'Age':list(range(1,121)), 'ProdUsed':produse} 
+produse = pd.DataFrame(data)
+
 playing = 'y'
 
 while playing == 'y':
@@ -101,9 +117,10 @@ while playing == 'y':
 
     while year < endyear:
         year += 1
+        alive = df[df['YearDeceased'].isnull()]
         df['CurrentYear'] = year
         df['Age'] = np.where(df['YearDeceased'].isnull(), (df['CurrentYear'] - df['YearBorn']), (df['YearDeceased'] - df['YearBorn'])).astype(int)
-
+        
         # did anyone die? if so enter in YearDeceased
         temp1 = df[df['YearDeceased'].isnull()].reset_index().merge(probdeath).set_index('index')[['Prob']]
         temp1['rand'] = [random.random() for i in temp1.index]
@@ -161,13 +178,13 @@ while playing == 'y':
             babies['Age'] = 0
             babies['NoOfChildren'] = 0
 
-            babies = babies[['FirstName', 'MiddleName', 'Surname', 'Sex', 'YearBorn', 'YearDeceased', 'CurrentYear', 'Age', 'ParentID', 'Generation', 'NoOfChildren']]
+            babies = babies[['FirstName', 'MiddleName', 'Surname', 'Sex', 'YearBorn', 'YearDeceased', 'CurrentYear', 'Age', 'ParentID', 'Generation', 'NoOfChildren', 'ProdOutput']]
             df = pd.concat([df, babies]).reset_index(drop=True)
             childadd = babies['ParentID'].tolist()
             df['NoOfChildren'] = np.where(df.index.isin(childadd) == True, 1, 0) + df['NoOfChildren']
 
-    csvfileloc = '{}\\TheTownOf{}.csv'.format(os.getcwd(), town)
-    df.to_csv(csvfileloc, index=False)
+    # add column for productivity
+    df['ProdOutput'] = df[df['YearDeceased'].isnull()].reset_index().merge(prodout, on='Age').set_index('index')[['ProdOutput']]
     
     print('')
     print('--------------------------------------------------')
@@ -176,17 +193,20 @@ while playing == 'y':
     print('--------------------------------------------------')
     print('')
     print('Current population: ')
-    print(len(df[df['YearDeceased'].isnull()]))
+    print(len(alive))
     print('')
     print('All people that ever lived: ')
     print(len(df))
     print('')
+    print('Total productive output')
+    print(alive['ProdOut'].sum())               
+    print('')
     print('A randomly selected living person:')
-    alive = df[df['YearDeceased'].isnull()].index.tolist()
-    print(df.iloc[random.choice(alive)])
+    alivelist = alive.index.tolist()
+    print(df.iloc[random.choice(alivelist)])
     print('')
     print('Average age: ')
-    print(df[df['YearDeceased'].isnull()]['Age'].mean())
+    print(alive['Age'].mean())
     print('')
     print('Average age at death: ')
     print(df[df['YearDeceased'].notnull()]['Age'].mean())
@@ -223,6 +243,9 @@ while playing == 'y':
             break
         else:
             print('invalid response, please enter y or n')
+    
+    csvfileloc = '{}\\TheTownOf{}.csv'.format(os.getcwd(), town)
+    df.to_csv(csvfileloc, index=False)
     
 
     
