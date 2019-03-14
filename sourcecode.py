@@ -178,7 +178,7 @@ while playing == 'y':
             babies['Age'] = 0
             babies['NoOfChildren'] = 0
 
-            babies = babies[['FirstName', 'MiddleName', 'Surname', 'Sex', 'YearBorn', 'YearDeceased', 'CurrentYear', 'Age', 'ParentID', 'Generation', 'NoOfChildren', 'ProdOutput']]
+            babies = babies[['FirstName', 'MiddleName', 'Surname', 'Sex', 'YearBorn', 'YearDeceased', 'CurrentYear', 'Age', 'ParentID', 'Generation', 'NoOfChildren']]
             df = pd.concat([df, babies]).reset_index(drop=True)
             childadd = babies['ParentID'].tolist()
             df['NoOfChildren'] = np.where(df.index.isin(childadd) == True, 1, 0) + df['NoOfChildren']
@@ -199,7 +199,7 @@ while playing == 'y':
     print(len(df))
     print('')
     print('Total productive output')
-    print(alive['ProdOut'].sum())               
+    print(df['ProdOutput'].sum())               
     print('')
     print('A randomly selected living person:')
     alivelist = alive.index.tolist()
@@ -244,6 +244,7 @@ while playing == 'y':
         else:
             print('invalid response, please enter y or n')
     
+    df.drop(columns={'ProdOutput'}, inplace=True)
     csvfileloc = '{}\\TheTownOf{}.csv'.format(os.getcwd(), town)
     df.to_csv(csvfileloc, index=False)
     
