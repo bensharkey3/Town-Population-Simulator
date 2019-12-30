@@ -10,32 +10,38 @@ class Person:
         
     @property
     def age(self):
-        if self.DOD == None:
-            return year - self.DOB
-        else:
+        if self.DOD != None:
             return self.DOD - self.DOB
+        else:
+            return year - self.DOB
+        
+    @property
+    def productive_output(self):
+        if self.DOD != None:
+            return 0
+        else:
+            r1 = list(range(0,16))
+            l1 = [0.0625]*15
+            lr1 = [r1*l1 for r1,l1 in zip(r1,l1)]
+            r2 = list(reversed(range(0,35)))
+            l2 = [0.0286]*34
+            lr2 = [r2*l2 for r2,l2 in zip(r2,l2)]
+            prodout = [0]*15 + lr1 + [1]*11 + lr2 + [0]*46
+            productive_output_at_age = dict(zip(list(range(0,121)), prodout))
+            return productive_output_at_age[self.age]
+        
+    @property
+    def productive_usage(self):
+        if self.DOD != None:
+            return 0
+        else:
+            return 0.25
 
     def reproduce(self):
         '''Person object has a baby, baby is stored as a new Person in obj_list'''
         ID = obj_list[-1].ID + 1
         parent_ID = self.ID
         obj_list.append(Person(ID, parent_ID))
-
-        
-def productivities():
-    '''creates productivity dicts'''
-    # create productive output by age dict
-    r1 = list(range(1,16))
-    l1 = [0.0625]*15
-    lr1 = [r1*l1 for r1,l1 in zip(r1,l1)]
-    r2 = list(reversed(range(1,35)))
-    l2 = [0.0286]*34
-    lr2 = [r2*l2 for r2,l2 in zip(r2,l2)]
-    prodout = [0]*14 + lr1 + [1]*11 + lr2 + [0]*46
-    productive_output_at_age = dict(zip(list(range(1,121)), prodout))
-    # create productive usage by age dict
-    productive_usage_at_age = dict(zip(list(range(1,121)), [0.25]*120))
-    return productive_output_at_age, productive_usage_at_age
 
 
 def probabilities(prob_baby_scale_factor=1):
@@ -56,11 +62,19 @@ def probabilities(prob_baby_scale_factor=1):
 print('Welcome to the game!')
 input('Press enter to continue:  ')
 
-# initialise the first person object
-obj_list = []
+# initialise the first 10 person objects
 year = 0
 p0 = Person(0,None)
-obj_list.append(p0)
+p1 = Person(1,None)
+p2 = Person(2,None)
+p3 = Person(3,None)
+p4 = Person(4,None)
+p5 = Person(5,None)
+p6 = Person(6,None)
+p7 = Person(7,None)
+p8 = Person(8,None)
+p9 = Person(9,None)
+obj_list = [p0,p1,p2,p3,p4,p5,p6,p7,p8,p9]
 
 playing = 'y'
 
@@ -72,6 +86,7 @@ while playing == 'y':
     while year < endyear:
         year += 1
 
+        
         ## people that died in the year
         # return probabilities from function
         prob_death_at_age, prob_baby_at_age = probabilities()
@@ -87,14 +102,23 @@ while playing == 'y':
 
         # update list of only living people. excludes those that have a DOD
         obj_list_alive = [x for x in obj_list if x.DOD == None]
-        
-        # for all people objects currently created, run the reproduce method
-        for i in obj_list_alive[:len(obj_list_alive)]:
+            
+            
+        ## people that had babies in the year
+        # did the person have a baby? if so run reproduce method
+        prob_baby_obj = [prob_baby_at_age[x] for x in [i.age for i in obj_list_alive]]
+        baby_in_year_bool = [x > y for x, y in zip(prob_baby_obj, [random.random() for i in obj_list_alive])]
+        baby_in_year_obj = [x for x, y in zip(obj_list_alive, baby_in_year_bool) if y == True]
+        for i in baby_in_year_obj[:len(baby_in_year_obj)]:
             i.reproduce()
+        
+        # update list of only living people. excludes those that have a DOD
+        obj_list_alive = [x for x in obj_list if x.DOD == None]
+        
         
         # write stats for the year to output table
         # anything that needs to be done at the end of each year, do here
-        print('year: {}, population: {}'.format(year, len(obj_list_alive)))
+        print('year: {}, population: {}, born {}, died {}, productive output {}, productive usage {}'.format(year, len(obj_list_alive), len(baby_in_year_obj), len(died_in_year_obj), round(sum(i.productive_output for i in obj_list_alive)), round(sum(i.productive_usage for i in obj_list_alive))))
 
         
     # enter end of period stats here
