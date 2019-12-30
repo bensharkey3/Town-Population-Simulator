@@ -20,14 +20,6 @@ class Person:
         if self.DOD != None:
             return 0
         else:
-            r1 = list(range(0,16))
-            l1 = [0.0625]*15
-            lr1 = [r1*l1 for r1,l1 in zip(r1,l1)]
-            r2 = list(reversed(range(0,35)))
-            l2 = [0.0286]*34
-            lr2 = [r2*l2 for r2,l2 in zip(r2,l2)]
-            prodout = [0]*15 + lr1 + [1]*11 + lr2 + [0]*46
-            productive_output_at_age = dict(zip(list(range(0,121)), prodout))
             return productive_output_at_age[self.age]
         
     @property
@@ -42,6 +34,19 @@ class Person:
         ID = obj_list[-1].ID + 1
         parent_ID = self.ID
         obj_list.append(Person(ID, parent_ID))
+
+        
+def productivity():
+    '''creates productive_output_at_age dict'''
+    r1 = list(range(0,16))
+    l1 = [0.0625]*15
+    lr1 = [r1*l1 for r1,l1 in zip(r1,l1)]
+    r2 = list(reversed(range(0,35)))
+    l2 = [0.0286]*34
+    lr2 = [r2*l2 for r2,l2 in zip(r2,l2)]
+    prodout = [0]*15 + lr1 + [1]*11 + lr2 + [0]*46
+    productive_output_at_age = dict(zip(list(range(0,121)), prodout))
+    return productive_output_at_age
 
 
 def probabilities(prob_baby_scale_factor=1):
@@ -62,6 +67,10 @@ def probabilities(prob_baby_scale_factor=1):
 print('Welcome to the game!')
 input('Press enter to continue:  ')
 
+# return probabilities and productivity from function
+prob_death_at_age, prob_baby_at_age = probabilities()
+productive_output_at_age = productivity()
+
 # initialise the first 10 person objects
 year = 0
 p0 = Person(0,None)
@@ -76,6 +85,7 @@ p8 = Person(8,None)
 p9 = Person(9,None)
 obj_list = [p0,p1,p2,p3,p4,p5,p6,p7,p8,p9]
 
+
 playing = 'y'
 
 while playing == 'y':
@@ -88,9 +98,6 @@ while playing == 'y':
 
         
         ## people that died in the year
-        # return probabilities from function
-        prob_death_at_age, prob_baby_at_age = probabilities()
-
         # create a list of only living people. excludes those that have a DOD
         obj_list_alive = [x for x in obj_list if x.DOD == None]
 
@@ -137,3 +144,10 @@ while playing == 'y':
             break
         else:
             print('invalid response, please enter y or n')
+            
+            
+## TO DO
+# input a factor for population growth
+# charts on current pop, born, died, average age, % in age demographic bins
+# excess productive output creates extra productive capacity
+# shortage of productive output creates declining population
