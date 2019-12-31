@@ -58,7 +58,7 @@ def probabilities(prob_baby_scale_factor=1):
     prob = [0.01, 0.02, 0.03, 0.04, 0.05, 0.075, 0.1, 0.13, 0.155, 0.19, 0.215, 0.215, 0.19, 0.155, 0.13, 0.1, 0.075, 0.05, 0.04, 0.03, 0.02, 0.01, 0.01]
     prob_baby_at_age = dict(zip(list(range(0,121)), [0]*18 + prob + [0]*80))
     # scaling probability of having a baby at age dict
-    prob_baby_at_age.update((x , y*prob_baby_scale_factor)for x, y in prob_baby_at_age.items())
+    prob_baby_at_age.update((x , y*prob_baby_scale_factor) for x, y in prob_baby_at_age.items())
     return prob_death_at_age, prob_baby_at_age
 
 
@@ -67,9 +67,6 @@ def probabilities(prob_baby_scale_factor=1):
 print('Welcome to the game!')
 input('Press enter to continue:  ')
 
-# return probabilities and productivity from function
-prob_death_at_age, prob_baby_at_age = probabilities()
-productive_output_at_age = productivity()
 
 # initialise the first 10 person objects
 year = 0
@@ -89,14 +86,23 @@ obj_list = [p0,p1,p2,p3,p4,p5,p6,p7,p8,p9]
 playing = 'y'
 
 while playing == 'y':
+    
     # add years
     yearsadd = int(input('Run for how many more years? (enter between 1-50 years):  '))
+    prob_baby_scale_factor = float(input('Enter growth factor (enter between 0-1):  '))
     endyear = year + yearsadd
+    
+    # return probabilities and productivity from function
+    prob_death_at_age, prob_baby_at_age = probabilities(prob_baby_scale_factor)
+    productive_output_at_age = productivity()
+    
+    print('prob baby scale factor {}'.format(prob_baby_scale_factor))
+    print('prob baby at age 30 {}'.format(prob_baby_at_age[30]))
+    
 
     while year < endyear:
         year += 1
 
-        
         ## people that died in the year
         # create a list of only living people. excludes those that have a DOD
         obj_list_alive = [x for x in obj_list if x.DOD == None]
@@ -151,3 +157,4 @@ while playing == 'y':
 # charts on current pop, born, died, average age, % in age demographic bins
 # excess productive output creates extra productive capacity
 # shortage of productive output creates declining population
+# exit game once population == 0
