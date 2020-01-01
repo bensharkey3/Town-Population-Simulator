@@ -1,4 +1,7 @@
 import random
+import pandas as pd
+import matplotlib
+%matplotlib inline
 
 
 class Person:
@@ -83,6 +86,10 @@ p9 = Person(9,None)
 obj_list = [p0,p1,p2,p3,p4,p5,p6,p7,p8,p9]
 
 
+# initialise the record keeping list of dicts
+statslist = [{'year': 0, 'population': len(obj_list), 'born': 0, 'died': 0, 'productive output': 0, 'productive usage': 0}]
+
+
 playing = 'y'
 
 while playing == 'y':
@@ -97,7 +104,7 @@ while playing == 'y':
     productive_output_at_age = productivity()
     
     print('prob baby scale factor {}'.format(prob_baby_scale_factor))
-    print('prob baby at age 30 {}'.format(prob_baby_at_age[30]))
+    print('prob baby at age 28 {}'.format(prob_baby_at_age[28]))
     
 
     while year < endyear:
@@ -132,11 +139,16 @@ while playing == 'y':
         # write stats for the year to output table
         # anything that needs to be done at the end of each year, do here
         print('year: {}, population: {}, born {}, died {}, productive output {}, productive usage {}'.format(year, len(obj_list_alive), len(baby_in_year_obj), len(died_in_year_obj), round(sum(i.productive_output for i in obj_list_alive)), round(sum(i.productive_usage for i in obj_list_alive))))
-
+        dictyr = {'year': year, 'population': len(obj_list_alive), 'born': len(baby_in_year_obj), 'died': len(died_in_year_obj), 'productive output': round(sum(i.productive_output for i in obj_list_alive)), 'productive usage': round(sum(i.productive_usage for i in obj_list_alive))}
+        statslist.append(dictyr)
         
     # enter end of period stats here
     # anything that needs to be done at the end of each run period, do here
     print('Statistics at the end of year {}'.format(year))
+    df = pd.DataFrame(statslist)
+    df = df[['year', 'population', 'born', 'died', 'productive output', 'productive usage']]
+    df[['population', 'born', 'died']].plot()
+    df[['productive output', 'productive usage']].plot()
 
     
     while True:
@@ -158,3 +170,5 @@ while playing == 'y':
 # excess productive output creates extra productive capacity
 # shortage of productive output creates declining population
 # exit game once population == 0
+# display charts at the end of each cycle
+# create horizontal bar chart to show demographic distribution
