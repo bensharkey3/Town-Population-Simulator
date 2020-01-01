@@ -58,7 +58,7 @@ def probabilities(prob_baby_scale_factor=1):
     prob = [0.01] * 1 + [0.001] * 40 + [0.002] * 10 + [0.008] * 10 + [0.012] * 10 + [0.025] * 10 + [0.05] * 5 + [0.1] * 5 + [0.2] * 5 + [0.25] * 15 + [0.35] * 6 + [0.5] * 3 + [1] * 1
     prob_death_at_age = dict(zip(list(range(0,121)), prob))
     # probability of having a baby at age dict     # min age=18, max age=40
-    prob = [0.01, 0.02, 0.03, 0.04, 0.05, 0.075, 0.1, 0.13, 0.155, 0.19, 0.215, 0.215, 0.19, 0.155, 0.13, 0.1, 0.075, 0.05, 0.04, 0.03, 0.02, 0.01, 0.01]
+    prob = [0.01, 0.02, 0.03, 0.04, 0.05, 0.075, 0.1, 0.13, 0.155, 0.165, 0.175, 0.18, 0.175, 0.165, 0.155, 0.13, 0.1, 0.075, 0.05, 0.04, 0.03, 0.02, 0.01]
     prob_baby_at_age = dict(zip(list(range(0,121)), [0]*18 + prob + [0]*80))
     # scaling probability of having a baby at age dict
     prob_baby_at_age.update((x , y*prob_baby_scale_factor) for x, y in prob_baby_at_age.items())
