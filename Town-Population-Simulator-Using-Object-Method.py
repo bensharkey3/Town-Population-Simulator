@@ -58,7 +58,7 @@ def probabilities(prob_baby_scale_factor=1):
     prob = [0.01] * 1 + [0.001] * 40 + [0.002] * 10 + [0.008] * 10 + [0.012] * 10 + [0.025] * 10 + [0.05] * 5 + [0.1] * 5 + [0.2] * 5 + [0.25] * 15 + [0.35] * 6 + [0.5] * 3 + [1] * 1
     prob_death_at_age = dict(zip(list(range(0,121)), prob))
     # probability of having a baby at age dict     # min age=18, max age=40
-    prob = [0.01, 0.02, 0.03, 0.04, 0.05, 0.075, 0.1, 0.13, 0.155, 0.165, 0.175, 0.18, 0.175, 0.165, 0.155, 0.13, 0.1, 0.075, 0.05, 0.04, 0.03, 0.02, 0.01]
+    prob = [0.01, 0.02, 0.03, 0.04, 0.05, 0.075, 0.1, 0.13, 0.155, 0.165, 0.172, 0.175, 0.172, 0.165, 0.155, 0.13, 0.1, 0.075, 0.05, 0.04, 0.03, 0.02, 0.01]
     prob_baby_at_age = dict(zip(list(range(0,121)), [0]*18 + prob + [0]*80))
     # scaling probability of having a baby at age dict
     prob_baby_at_age.update((x , y*prob_baby_scale_factor) for x, y in prob_baby_at_age.items())
@@ -87,7 +87,7 @@ obj_list = [p0,p1,p2,p3,p4,p5,p6,p7,p8,p9]
 
 
 # initialise the record keeping list of dicts
-statslist = [{'year': 0, 'population': len(obj_list), 'born': 0, 'died': 0, 'productive output': 0, 'productive usage': 0}]
+statslist = [{'year': 0, 'population': len(obj_list), 'born': 0, 'died': 0,'average age':round(sum(i.age for i in obj_list) / len(obj_list_alive)), 'productive output': 0, 'productive usage': 0}]
 
 
 playing = 'y'
@@ -139,16 +139,17 @@ while playing == 'y':
         # write stats for the year to output table
         # anything that needs to be done at the end of each year, do here
         print('year: {}, population: {}, born {}, died {}, productive output {}, productive usage {}'.format(year, len(obj_list_alive), len(baby_in_year_obj), len(died_in_year_obj), round(sum(i.productive_output for i in obj_list_alive)), round(sum(i.productive_usage for i in obj_list_alive))))
-        dictyr = {'year': year, 'population': len(obj_list_alive), 'born': len(baby_in_year_obj), 'died': len(died_in_year_obj), 'productive output': round(sum(i.productive_output for i in obj_list_alive)), 'productive usage': round(sum(i.productive_usage for i in obj_list_alive))}
+        dictyr = {'year': year, 'population': len(obj_list_alive), 'born': len(baby_in_year_obj), 'died': len(died_in_year_obj), 'average age':round(sum(i.age for i in obj_list_alive) / len(obj_list_alive)), 'productive output': round(sum(i.productive_output for i in obj_list_alive)), 'productive usage': round(sum(i.productive_usage for i in obj_list_alive))}
         statslist.append(dictyr)
         
     # enter end of period stats here
     # anything that needs to be done at the end of each run period, do here
     print('Statistics at the end of year {}'.format(year))
     df = pd.DataFrame(statslist)
-    df = df[['year', 'population', 'born', 'died', 'productive output', 'productive usage']]
+    df = df[['year', 'population', 'born', 'died', 'average age', 'productive output', 'productive usage']]
     df[['population', 'born', 'died']].plot()
     df[['productive output', 'productive usage']].plot()
+    df[['average age']].plot()
 
     
     while True:
@@ -165,10 +166,10 @@ while playing == 'y':
             
             
 ## TO DO
-# input a factor for population growth
 # charts on current pop, born, died, average age, % in age demographic bins
 # excess productive output creates extra productive capacity
 # shortage of productive output creates declining population
 # exit game once population == 0
 # display charts at the end of each cycle
+# add average age
 # create horizontal bar chart to show demographic distribution
