@@ -87,7 +87,7 @@ obj_list = [p0,p1,p2,p3,p4,p5,p6,p7,p8,p9]
 
 
 # initialise the record keeping list of dicts
-statslist = [{'year': 0, 'population': len(obj_list), 'born': 0, 'died': 0,'average age':round(sum(i.age for i in obj_list) / len(obj_list_alive)), 'productive output': 0, 'productive usage': 0}]
+statslist = [{'year': 0, 'population': len(obj_list), 'born': 0, 'died': 0,'average age':round(sum(i.age for i in obj_list) / len(obj_list)), 'productive output': 0, 'productive usage': 0}]
 
 
 playing = 'y'
